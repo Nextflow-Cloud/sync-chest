@@ -1,8 +1,0 @@
-/workspaces/sync-chest/src/main/java/cloud/nextflow/syncchest/database/types/H2.java
-/workspaces/sync-chest/src/main/java/cloud/nextflow/syncchest/database/types/MariaDB.java
-/workspaces/sync-chest/src/main/java/cloud/nextflow/syncchest/commands/SyncCommands.java
-/workspaces/sync-chest/src/main/java/cloud/nextflow/syncchest/database/HikariCP.java
-/workspaces/sync-chest/src/main/java/cloud/nextflow/syncchest/Syncchest.java
-/workspaces/sync-chest/src/main/java/cloud/nextflow/syncchest/events/SyncEvents.java
-/workspaces/sync-chest/src/main/java/cloud/nextflow/syncchest/database/DatabaseAPI.java
-/workspaces/sync-chest/src/main/java/cloud/nextflow/syncchest/database/types/DatabaseType.java

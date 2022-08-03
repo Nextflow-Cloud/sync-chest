@@ -1,2 +1,2 @@
-# sync-chest
-A plugin that uses MySQL to Sync a chest like-gui.
+# Sync chest
+A plugin that uses two different SQL variations to sync a Minecraft virtual chest.

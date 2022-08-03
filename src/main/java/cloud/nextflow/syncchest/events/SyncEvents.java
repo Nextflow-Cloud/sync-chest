@@ -4,6 +4,7 @@ import cloud.nextflow.syncchest.database.DatabaseAPI;
 import cloud.nextflow.syncchest.database.HikariCP;
 import cloud.nextflow.syncchest.database.types.H2;
 import cloud.nextflow.syncchest.database.types.MariaDB;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,7 +22,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 public class SyncEvents implements Listener {
-
     private FileConfiguration config;
 
     public SyncEvents(FileConfiguration plugin) {
@@ -32,19 +32,14 @@ public class SyncEvents implements Listener {
     public void onPlayerCloseChest(InventoryCloseEvent event) {
         if (event.getView().getTitle().startsWith(ChatColor.translateAlternateColorCodes('&', "&4&lSync Chest &r&8- &a"))) {
             Player player = Bukkit.getPlayer(event.getView().getTitle().split(ChatColor.translateAlternateColorCodes('&', "&4&lSync Chest &r&8- &a"))[1]);
-
             String uuid = player.getUniqueId().toString();
-
             ItemStack[] itemStacks = event.getInventory().getContents();
-
             try {
                 ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
                 BukkitObjectOutputStream out = new BukkitObjectOutputStream(byteOut);
                 out.writeObject(itemStacks);
-
                 String type = this.config.getString("type");
                 HikariCP hikariCP = null;
-
                 if (type.equalsIgnoreCase("h2")) {
                     H2 h2Type = new H2(this.config.getString("h2.file"), this.config.getString("h2.username"), this.config.getString("h2.password"));
                     hikariCP = DatabaseAPI.getHikariCP(h2Type);

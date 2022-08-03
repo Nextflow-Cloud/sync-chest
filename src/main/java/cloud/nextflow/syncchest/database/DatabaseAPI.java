@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DatabaseAPI {
-
     private static Map<String, HikariCP> hikariCP = new HashMap<>();
 
     public static HikariCP getHikariCP(H2 type) {

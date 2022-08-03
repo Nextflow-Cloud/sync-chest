@@ -4,6 +4,7 @@ import cloud.nextflow.syncchest.database.DatabaseAPI;
 import cloud.nextflow.syncchest.database.HikariCP;
 import cloud.nextflow.syncchest.database.types.H2;
 import cloud.nextflow.syncchest.database.types.MariaDB;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SyncCommands implements TabExecutor {
-
     private FileConfiguration config;
     private JavaPlugin plugin;
 
@@ -40,15 +40,10 @@ public class SyncCommands implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (sender instanceof Player) {
-
             Player player;
-
             if (args.length == 0) {
-
-                player = (Player) sender;
-
+                player = (Player)sender;
             } else {
                 player = Bukkit.getPlayer(args[0]);
                 if (player != null && !player.getUniqueId().toString().equals((( Player ) sender).getUniqueId().toString())) {
@@ -94,14 +89,10 @@ public class SyncCommands implements TabExecutor {
                     }
                 }
             }
-
             String uuid = player.getUniqueId().toString();
-
-            Inventory schest = Bukkit.createInventory((( Player ) sender), 54, ChatColor.translateAlternateColorCodes('&', "&4&lSync Chest &r&8- &a" + player.getName()));
-
+            Inventory schest = Bukkit.createInventory(((Player)sender), 54, ChatColor.translateAlternateColorCodes('&', "&4&lSync Chest &r&8- &a" + player.getName()));
             String type = this.config.getString("type");
             HikariCP hikariCP = null;
-
             if (type.equalsIgnoreCase("h2")) {
                 H2 h2Type = new H2(this.config.getString("h2.file"), this.config.getString("h2.username"), this.config.getString("h2.password"));
                 hikariCP = DatabaseAPI.getHikariCP(h2Type);
@@ -114,35 +105,27 @@ public class SyncCommands implements TabExecutor {
                 );
                 hikariCP = DatabaseAPI.getHikariCP(mariaDBType);
             }
-
             ItemStack[] itemStacks = null;
-
             try {
                 ByteArrayInputStream byteIn = hikariCP.getSyncChest(uuid);
                 if (byteIn != null) {
                     BukkitObjectInputStream in = new BukkitObjectInputStream(byteIn);
-
                     itemStacks = (ItemStack[]) in.readObject();
-
                     schest.setContents(itemStacks);
                 }
             } catch (IOException | ClassNotFoundException exception) {
                 exception.printStackTrace();
             }
-
-            (( Player ) sender).openInventory(schest);
+            ((Player)sender).openInventory(schest);
         }
-
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> tab = new ArrayList<>();
-
         tab.add("reload");
         tab.add("help");
-
         return tab;
     }
 }

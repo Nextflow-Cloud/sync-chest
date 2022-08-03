@@ -9,7 +9,7 @@ import cloud.nextflow.syncchest.events.SyncEvents;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class Syncchest extends JavaPlugin {
+public final class SyncChest extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic

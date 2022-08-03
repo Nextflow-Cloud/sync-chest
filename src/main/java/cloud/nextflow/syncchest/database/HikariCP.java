@@ -26,6 +26,7 @@ public class HikariCP {
             hikariConfig.setMinimumIdle(20);
             hikariConfig.setMaximumPoolSize(10);
             hikariConfig.setConnectionTestQuery("SELECT 1");
+            hikariConfig.setDriverClassName("org.h2.Driver");
             hikariConfig.setJdbcUrl("jdbc:h2:" + type.file);
             hikariConfig.addDataSourceProperty("user", type.user);
             hikariConfig.addDataSourceProperty("password", type.password);

@@ -1,7 +1,6 @@
 package cloud.nextflow.syncchest.database.types;
 
 public class MariaDB implements DatabaseType {
-
     public String host;
     public int port;
     public String database;

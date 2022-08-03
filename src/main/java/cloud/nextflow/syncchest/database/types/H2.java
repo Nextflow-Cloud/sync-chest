@@ -1,7 +1,6 @@
 package cloud.nextflow.syncchest.database.types;
 
 public class H2 implements DatabaseType {
-
     public String file;
     public String user;
     public String password;

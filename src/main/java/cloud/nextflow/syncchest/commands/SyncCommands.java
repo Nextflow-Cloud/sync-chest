@@ -2,6 +2,8 @@ package cloud.nextflow.syncchest.commands;
 
 import cloud.nextflow.syncchest.database.DatabaseAPI;
 import cloud.nextflow.syncchest.database.HikariCP;
+import cloud.nextflow.syncchest.database.types.H2;
+import cloud.nextflow.syncchest.database.types.MariaDB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -49,7 +51,7 @@ public class SyncCommands implements TabExecutor {
 
             } else {
                 player = Bukkit.getPlayer(args[0]);
-                if (player != null) {
+                if (player != null && !player.getUniqueId().toString().equals((( Player ) sender).getUniqueId().toString())) {
                     if (!sender.hasPermission("schest.other") || !sender.hasPermission("schest.admin") || !sender.isOp()) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', this.config.getString("prefix") + " &cI'm sorry but you don't have permission to execute this command."));
                         return false;
@@ -87,7 +89,7 @@ public class SyncCommands implements TabExecutor {
                                 e.printStackTrace();
                             }
                         default:
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', this.config.getString("prefix") + " &cSorry could not find that player."));
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', this.config.getString("prefix") + " &cSorry could not find that player/command."));
                             return false;
                     }
                 }
@@ -95,14 +97,23 @@ public class SyncCommands implements TabExecutor {
 
             String uuid = player.getUniqueId().toString();
 
-            Inventory schest = Bukkit.createInventory(player, 54, ChatColor.translateAlternateColorCodes('&', "&4&lSync Chest &r&8- &a" + player.getName()));
+            Inventory schest = Bukkit.createInventory((( Player ) sender), 54, ChatColor.translateAlternateColorCodes('&', "&4&lSync Chest &r&8- &a" + player.getName()));
 
-            HikariCP hikariCP = DatabaseAPI.getHikariCP(this.config.getString("host"),
-                    this.config.getString("database"),
-                    this.config.getInt("port"),
-                    this.config.getString("username"),
-                    this.config.getString("password")
-            );
+            String type = this.config.getString("type");
+            HikariCP hikariCP = null;
+
+            if (type.equalsIgnoreCase("h2")) {
+                H2 h2Type = new H2(this.config.getString("h2.file"), this.config.getString("h2.username"), this.config.getString("h2.password"));
+                hikariCP = DatabaseAPI.getHikariCP(h2Type);
+            } else if (type.equalsIgnoreCase("mariadb")) {
+                MariaDB mariaDBType = new MariaDB(this.config.getString("host"),
+                        this.config.getInt("port"),
+                        this.config.getString("database"),
+                        this.config.getString("username"),
+                        this.config.getString("password")
+                );
+                hikariCP = DatabaseAPI.getHikariCP(mariaDBType);
+            }
 
             ItemStack[] itemStacks = null;
 
@@ -119,7 +130,7 @@ public class SyncCommands implements TabExecutor {
                 exception.printStackTrace();
             }
 
-            player.openInventory(schest);
+            (( Player ) sender).openInventory(schest);
         }
 
         return true;

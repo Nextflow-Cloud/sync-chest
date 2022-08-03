@@ -1,5 +1,8 @@
 cloud\nextflow\syncchest\events\SyncEvents.class
+cloud\nextflow\syncchest\database\types\DatabaseType.class
 cloud\nextflow\syncchest\database\HikariCP.class
+cloud\nextflow\syncchest\database\types\MariaDB.class
 cloud\nextflow\syncchest\Syncchest.class
 cloud\nextflow\syncchest\commands\SyncCommands.class
 cloud\nextflow\syncchest\database\DatabaseAPI.class
+cloud\nextflow\syncchest\database\types\H2.class

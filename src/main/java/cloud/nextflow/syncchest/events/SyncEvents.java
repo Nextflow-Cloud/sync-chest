@@ -2,6 +2,8 @@ package cloud.nextflow.syncchest.events;
 
 import cloud.nextflow.syncchest.database.DatabaseAPI;
 import cloud.nextflow.syncchest.database.HikariCP;
+import cloud.nextflow.syncchest.database.types.H2;
+import cloud.nextflow.syncchest.database.types.MariaDB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,12 +42,21 @@ public class SyncEvents implements Listener {
                 BukkitObjectOutputStream out = new BukkitObjectOutputStream(byteOut);
                 out.writeObject(itemStacks);
 
-                HikariCP hikariCP = DatabaseAPI.getHikariCP(this.config.getString("host"),
-                        this.config.getString("database"),
-                        this.config.getInt("port"),
-                        this.config.getString("username"),
-                        this.config.getString("password")
-                );
+                String type = this.config.getString("type");
+                HikariCP hikariCP = null;
+
+                if (type.equalsIgnoreCase("h2")) {
+                    H2 h2Type = new H2(this.config.getString("h2.file"), this.config.getString("h2.username"), this.config.getString("h2.password"));
+                    hikariCP = DatabaseAPI.getHikariCP(h2Type);
+                } else if (type.equalsIgnoreCase("mariadb")) {
+                    MariaDB mariaDBType = new MariaDB(this.config.getString("host"),
+                            this.config.getInt("port"),
+                            this.config.getString("database"),
+                            this.config.getString("username"),
+                            this.config.getString("password")
+                    );
+                    hikariCP = DatabaseAPI.getHikariCP(mariaDBType);
+                }
                 hikariCP.updateSyncChest(uuid, byteOut);
             } catch (IOException exception) {
                 exception.printStackTrace();

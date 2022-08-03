@@ -2,7 +2,10 @@ package cloud.nextflow.syncchest.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.bukkit.Bukkit;
+
+import cloud.nextflow.syncchest.database.types.DatabaseType;
+import cloud.nextflow.syncchest.database.types.H2;
+import cloud.nextflow.syncchest.database.types.MariaDB;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,34 +14,56 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.bukkit.Bukkit;
 
 public class HikariCP {
 
     private HikariDataSource hikariCP;
-    private HikariConfig hikariConfig;
 
-    public HikariCP(String host, String database, int port, String user, String password) {
+    public HikariCP(H2 type) {
         try {
-
-            this.hikariConfig = new HikariConfig();
+            HikariConfig hikariConfig = new HikariConfig();
             hikariConfig.setMinimumIdle(20);
             hikariConfig.setMaximumPoolSize(10);
             hikariConfig.setConnectionTestQuery("SELECT 1");
-            hikariConfig.setDriverClassName("org.mariadb.jdbc.Driver");
-            hikariConfig.setJdbcUrl("jdbc:mariadb://" + host + ":" + port + "/" + database);
-            hikariConfig.addDataSourceProperty("user", user);
-            hikariConfig.addDataSourceProperty("password", password);
+            hikariConfig.setJdbcUrl("jdbc:h2:" + type.file);
+            hikariConfig.addDataSourceProperty("user", type.user);
+            hikariConfig.addDataSourceProperty("password", type.password);
 
             this.hikariCP = new HikariDataSource(hikariConfig);
             if (!this.hikariCP.isClosed()) {
-                Bukkit.getLogger().info("[SyncChest] Connected to MySQL");
+                Bukkit.getLogger().info("Connected to H2 DB");
             } else {
-                Bukkit.getLogger().warning("[SyncChest] Failed to connect to MySQL database. Are credentials correct?");
+                Bukkit.getLogger().info("Failed to connect to H2 database. Are credentials correct?");
             }
             this.initialize();
         } catch (NullPointerException exception) {
             exception.printStackTrace();
-            Bukkit.getLogger().warning("[SyncChest] Failed to connect to MySQL database.");
+            Bukkit.getLogger().info("Failed to connect to H2 database.");
+        }
+    }
+
+    public HikariCP(MariaDB type) {
+        try {
+            HikariConfig hikariConfig = new HikariConfig();
+            hikariConfig.setMinimumIdle(20);
+            hikariConfig.setMaximumPoolSize(10);
+            hikariConfig.setConnectionTestQuery("SELECT 1");
+            hikariConfig.setDriverClassName("org.mariadb.jdbc.Driver");
+            hikariConfig.setJdbcUrl("jdbc:mariadb://" + type.host + ":" + type.port + "/" + type.database);
+            hikariConfig.addDataSourceProperty("user", type.user);
+            hikariConfig.addDataSourceProperty("password", type.password);
+
+            this.hikariCP = new HikariDataSource(hikariConfig);
+            if (!this.hikariCP.isClosed()) {
+                Bukkit.getLogger().info("Connected to MySQL");
+            } else {
+                Bukkit.getLogger().warning("Failed to connect to MySQL database. Are credentials correct?");
+            }
+            this.initialize();
+        } catch (NullPointerException exception) {
+            exception.printStackTrace();
+            Bukkit.getLogger().warning("Failed to connect to MySQL database.");
         }
     }
 
@@ -51,9 +76,7 @@ public class HikariCP {
                     preparedStatement.close();
                 connection.close();
             }
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        } catch (NullPointerException exception) {
+        } catch (SQLException | NullPointerException exception) {
             exception.printStackTrace();
         }
     }

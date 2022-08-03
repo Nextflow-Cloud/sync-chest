@@ -1,5 +1,8 @@
 C:\Users\chhab\Repositories\synchest\src\main\java\cloud\nextflow\syncchest\database\HikariCP.java
+C:\Users\chhab\Repositories\synchest\src\main\java\cloud\nextflow\syncchest\database\types\MariaDB.java
 C:\Users\chhab\Repositories\synchest\src\main\java\cloud\nextflow\syncchest\commands\SyncCommands.java
+C:\Users\chhab\Repositories\synchest\src\main\java\cloud\nextflow\syncchest\database\types\DatabaseType.java
 C:\Users\chhab\Repositories\synchest\src\main\java\cloud\nextflow\syncchest\events\SyncEvents.java
 C:\Users\chhab\Repositories\synchest\src\main\java\cloud\nextflow\syncchest\Syncchest.java
 C:\Users\chhab\Repositories\synchest\src\main\java\cloud\nextflow\syncchest\database\DatabaseAPI.java
+C:\Users\chhab\Repositories\synchest\src\main\java\cloud\nextflow\syncchest\database\types\H2.java

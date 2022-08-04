@@ -13,7 +13,6 @@ import java.sql.SQLException;
 public class SQLConnector {
     private HikariDataSource hikariCP;
 
-
     public SQLConnector(H2 type) {
         try {
             HikariConfig hikariConfig = new HikariConfig();

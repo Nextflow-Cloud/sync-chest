@@ -99,7 +99,6 @@ public class SyncCommands implements TabExecutor {
             SQLConnector hikariCP = null;
             MongoConnector mongoConnector = null;
             DBUtils dbUtils = null;
-
             if (type.equalsIgnoreCase("h2")) {
                 H2 h2Type = new H2(this.dataDirectory.toPath().toString() + "\\" + FilenameUtils.getName(this.config.getString("h2.file")), this.config.getString("h2.username"), this.config.getString("h2.password"));
                 hikariCP = DatabaseAPI.getHikariCP(h2Type);
@@ -121,7 +120,6 @@ public class SyncCommands implements TabExecutor {
                 mongoConnector = DatabaseAPI.getMongoConnector(mongoDBType);
                 dbUtils = new DBUtils(mongoConnector);
             }
-
             ItemStack[] itemStacks = null;
             try {
                 ByteArrayInputStream byteIn = dbUtils.getSyncChest(uuid);

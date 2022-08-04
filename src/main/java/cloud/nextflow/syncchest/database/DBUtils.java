@@ -2,6 +2,7 @@ package cloud.nextflow.syncchest.database;
 
 import cloud.nextflow.syncchest.database.types.mongo.MongoConnector;
 import cloud.nextflow.syncchest.database.types.sql.SQLConnector;
+
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
@@ -16,7 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DBUtils {
-
     private MongoConnector mongoConnector;
     private SQLConnector sqlConnector;
     private String type;
@@ -39,21 +39,16 @@ public class DBUtils {
         if (type.equals("MONGOCONNECTOR")) {
             Document toFind = new Document();
             toFind.append("uuid", uuid);
-
             Document findIfExists = mongoConnector.getCollection().find(toFind).first();
             if (findIfExists == null) {
                 Document toInsert = new Document();
                 toInsert.append("uuid", uuid);
                 toInsert.append("itemstack", data.toByteArray());
-
                 mongoConnector.getCollection().insertOne(toInsert);
-
                 return true;
             }
-
             Bson toUpdate = Updates.set("itemstack", data.toByteArray());
             UpdateOptions updateOptions = new UpdateOptions();
-
             mongoConnector.getCollection().updateOne(toFind, toUpdate, updateOptions);
         } else if (type.equalsIgnoreCase("SQLCONNECTOR")) {
             Connection connection = null;
@@ -70,7 +65,6 @@ public class DBUtils {
                 } else {
                     exists = false;
                 }
-
             } catch (SQLException exception) {
                 exception.printStackTrace();
             } finally {
@@ -103,7 +97,6 @@ public class DBUtils {
             }
             return false;
         }
-
         return false;
     }
 
@@ -111,14 +104,11 @@ public class DBUtils {
         if (type.equals("MONGOCONNECTOR")) {
             Document toFind = new Document();
             toFind.append("uuid", uuid);
-
             Document findIfExits = mongoConnector.getCollection().find(toFind).first();
             if (findIfExits == null) {
                 return null;
             }
-
             Binary binData = ( Binary ) findIfExits.get("itemstack");
-
             return new ByteArrayInputStream(binData.getData());
         } else if (type.equalsIgnoreCase("SQLCONNECTOR")) {
             Connection connection = null;
@@ -142,8 +132,6 @@ public class DBUtils {
             }
             return result;
         }
-
         return null;
     }
-
 }

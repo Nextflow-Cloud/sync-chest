@@ -1,7 +1,6 @@
 package cloud.nextflow.syncchest.database.types.mongo;
 
 public class MongoDB implements MongoType {
-
     public String uri;
     public String database;
     public String collection;

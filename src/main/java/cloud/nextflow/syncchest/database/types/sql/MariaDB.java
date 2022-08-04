@@ -1,6 +1,6 @@
-package cloud.nextflow.syncchest.database.types;
+package cloud.nextflow.syncchest.database.types.sql;
 
-public class MariaDB implements DatabaseType {
+public class MariaDB implements SQLType {
     public String host;
     public int port;
     public String database;
@@ -16,7 +16,7 @@ public class MariaDB implements DatabaseType {
     }
 
     @Override
-    public DatabaseType getType() {
+    public SQLType getType() {
         return this;
     }
 

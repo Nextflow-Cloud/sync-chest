@@ -1,6 +1,6 @@
-package cloud.nextflow.syncchest.database.types;
+package cloud.nextflow.syncchest.database.types.sql;
 
-public class H2 implements DatabaseType {
+public class H2 implements SQLType {
     public String file;
     public String user;
     public String password;
@@ -12,11 +12,10 @@ public class H2 implements DatabaseType {
     }
 
     @Override
-    public DatabaseType getType() {
+    public SQLType getType() {
         return this;
     }
 
-    @Override
     public String toString() {
         return "H2";
     }

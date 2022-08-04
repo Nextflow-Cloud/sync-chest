@@ -5,8 +5,12 @@ mariadb:
   password: "password"
   database: "schest"
 h2:
-  file: "./syncchest"
+  file: "syncchest"
   username: "user"
   password: "password"
+mongodb:
+  uri: "mongodb://localhost:27017/db"
+  database: "schest"
+  collection: "sc_"
 type: h2
 prefix: "&8[&4&lSyncChest&8]"

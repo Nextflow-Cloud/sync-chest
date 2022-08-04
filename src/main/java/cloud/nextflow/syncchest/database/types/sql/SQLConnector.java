@@ -1,33 +1,26 @@
-package cloud.nextflow.syncchest.database;
-
-import cloud.nextflow.syncchest.database.types.DatabaseType;
-import cloud.nextflow.syncchest.database.types.H2;
-import cloud.nextflow.syncchest.database.types.MariaDB;
+package cloud.nextflow.syncchest.database.types.sql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import org.bukkit.Bukkit;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PipedInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class HikariCP {
+public class SQLConnector {
     private HikariDataSource hikariCP;
 
-    public HikariCP(H2 type) {
+    public SQLConnector(H2 type) {
         try {
             HikariConfig hikariConfig = new HikariConfig();
             hikariConfig.setMinimumIdle(20);
             hikariConfig.setMaximumPoolSize(10);
             hikariConfig.setConnectionTestQuery("SELECT 1");
             hikariConfig.setDriverClassName("org.h2.Driver");
-            hikariConfig.setJdbcUrl("jdbc:h2:" + type.file);
+            hikariConfig.setJdbcUrl("jdbc:h2:./" + type.file);
             hikariConfig.addDataSourceProperty("user", type.user);
             hikariConfig.addDataSourceProperty("password", type.password);
             this.hikariCP = new HikariDataSource(hikariConfig);
@@ -43,7 +36,7 @@ public class HikariCP {
         }
     }
 
-    public HikariCP(MariaDB type) {
+    public SQLConnector(MariaDB type) {
         try {
             HikariConfig hikariConfig = new HikariConfig();
             hikariConfig.setMinimumIdle(20);
@@ -92,78 +85,6 @@ public class HikariCP {
         } finally {
             closeConnections(preparedStatement, connection, null);
         }
-    }
-
-    public boolean updateSyncChest(String uuid, ByteArrayOutputStream data) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        boolean exists = false;
-        try {
-            connection = getHikariCP().getConnection();
-            preparedStatement = connection.prepareStatement("SELECT * FROM sc_ WHERE UUID = ?");
-            preparedStatement.setString(1, uuid);
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                exists = true;
-            } else {
-                exists = false;
-            }
-
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        } finally {
-            closeConnections(preparedStatement, connection, resultSet);
-        }
-        if (exists) {
-            try {
-                connection = getHikariCP().getConnection();
-                preparedStatement = connection.prepareStatement("UPDATE sc_ SET itemstack = ? WHERE UUID = ?");
-                preparedStatement.setBinaryStream(1, new ByteArrayInputStream(data.toByteArray()));
-                preparedStatement.setString(2, uuid);
-                preparedStatement.executeUpdate();
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            } finally {
-                closeConnections(preparedStatement, connection, null);
-            }
-        } else {
-            try {
-                connection = getHikariCP().getConnection();
-                preparedStatement = connection.prepareStatement("INSERT INTO sc_ VALUES (?, ?)");
-                preparedStatement.setBinaryStream(1, new ByteArrayInputStream(data.toByteArray()));
-                preparedStatement.setString(2, uuid);
-                preparedStatement.executeUpdate();
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            } finally {
-                closeConnections(preparedStatement, connection, null);
-            }
-        }
-        return false;
-    }
-
-    public ByteArrayInputStream getSyncChest(String uuid) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        ByteArrayInputStream result = null;
-        try {
-            connection = getHikariCP().getConnection();
-            preparedStatement = connection.prepareStatement("SELECT * FROM sc_ WHERE UUID = ?");
-            preparedStatement.setString(1, uuid);
-            resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result = new ByteArrayInputStream(resultSet.getBytes("itemstack"));
-            } else {
-                result = null;
-            }
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        } finally {
-            closeConnections(preparedStatement, connection, resultSet);
-        }
-        return result;
     }
 
     public HikariDataSource getHikariCP() {

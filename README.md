@@ -1,5 +1,7 @@
+![NEXTFLOW LOGO](https://cdn.nextflow.cloud/assets/SyncChest_Banner.png)
 
 [![GNU GPL v3 LICENSE](https://img.shields.io/github/license/Nextflow-Cloud/sync-chest?&logo=github)](LICENSE)
+![MINECRAFT VERSION SUPPORT](https://img.shields.io/badge/versions-1.8--1.19-brightgreen.svg)
 
 # Sync Chest
 A fast, easy, reliable way to synchonize a Minecraft virtual chest across a database, for ease of use. A modern and well maintained plugin to synchronise a virtual chest.

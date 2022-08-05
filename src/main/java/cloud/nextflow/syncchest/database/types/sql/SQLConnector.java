@@ -27,12 +27,12 @@ public class SQLConnector {
             if (!this.hikariCP.isClosed()) {
                 Bukkit.getLogger().info("Connected to H2 DB");
             } else {
-                Bukkit.getLogger().info("Failed to connect to H2 database. Are credentials correct?");
+                Bukkit.getLogger().warning("Failed to connect to H2 database. Are credentials correct?");
             }
             this.initialize();
         } catch (NullPointerException exception) {
             exception.printStackTrace();
-            Bukkit.getLogger().info("Failed to connect to H2 database.");
+            Bukkit.getLogger().warning("Failed to connect to H2 database.");
         }
     }
 

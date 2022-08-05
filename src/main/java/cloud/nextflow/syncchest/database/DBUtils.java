@@ -19,24 +19,27 @@ import java.sql.SQLException;
 public class DBUtils {
     private MongoConnector mongoConnector;
     private SQLConnector sqlConnector;
-    private String type;
+    private int type = 0;
+
+    private int SQLCONNECTOR = 0;
+    private int MONGOCONNECTOR = 1;
 
     public DBUtils(SQLConnector connector) {
         this.sqlConnector = connector;
-        this.type = "SQLCONNECTOR";
+        this.type = SQLCONNECTOR;
     }
 
     public DBUtils(MongoConnector connector) {
         this.mongoConnector = connector;
-        this.type = "MONGOCONNECTOR";
+        this.type = MONGOCONNECTOR;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
     public boolean updateSyncChest(String uuid, ByteArrayOutputStream data) {
-        if (type.equals("MONGOCONNECTOR")) {
+        if (type == MONGOCONNECTOR) {
             Document toFind = new Document();
             toFind.append("uuid", uuid);
             Document findIfExists = mongoConnector.getCollection().find(toFind).first();
@@ -50,7 +53,7 @@ public class DBUtils {
             Bson toUpdate = Updates.set("itemstack", data.toByteArray());
             UpdateOptions updateOptions = new UpdateOptions();
             mongoConnector.getCollection().updateOne(toFind, toUpdate, updateOptions);
-        } else if (type.equalsIgnoreCase("SQLCONNECTOR")) {
+        } else if (type == SQLCONNECTOR) {
             Connection connection = null;
             PreparedStatement preparedStatement = null;
             ResultSet resultSet = null;
@@ -101,7 +104,7 @@ public class DBUtils {
     }
 
     public ByteArrayInputStream getSyncChest(String uuid) {
-        if (type.equals("MONGOCONNECTOR")) {
+        if (type == MONGOCONNECTOR) {
             Document toFind = new Document();
             toFind.append("uuid", uuid);
             Document findIfExits = mongoConnector.getCollection().find(toFind).first();
@@ -110,7 +113,7 @@ public class DBUtils {
             }
             Binary binData = ( Binary ) findIfExits.get("itemstack");
             return new ByteArrayInputStream(binData.getData());
-        } else if (type.equalsIgnoreCase("SQLCONNECTOR")) {
+        } else if (type == SQLCONNECTOR) {
             Connection connection = null;
             PreparedStatement preparedStatement = null;
             ResultSet resultSet = null;
